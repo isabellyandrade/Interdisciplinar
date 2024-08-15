@@ -1,0 +1,28 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const GaleriaController_1 = require("./controller/GaleriaController");
+const ImagemController_1 = require("./controller/ImagemController");
+const UsuarioController_1 = require("./controller/UsuarioController");
+const app = (0, express_1.default)();
+const PORT = 3400;
+app.use(express_1.default.json());
+app.post("/api/galeria", GaleriaController_1.cadastrarGaleria);
+app.put("/api/galeria", GaleriaController_1.atualizarGaleria);
+app.delete("/api/galeria", GaleriaController_1.deletarGaleria);
+app.get("/api/galeria", GaleriaController_1.getGaleria);
+app.get("/api/galeria/todos", GaleriaController_1.getGalerias);
+app.post("/api/imagem", ImagemController_1.cadastrarImagem);
+app.put("/api/imagem", ImagemController_1.atualizarImagem);
+app.delete("/api/imagem", ImagemController_1.deletarImagem);
+app.get("/api/imagem", ImagemController_1.getImagem);
+app.get("/api/imagem/todos", ImagemController_1.getImagems);
+app.post("/api/usuario", UsuarioController_1.cadastrarUsuario);
+app.put("/api/usuario", UsuarioController_1.atualizarUsuario);
+app.delete("/api/usuario", UsuarioController_1.deletarUsuario);
+app.get("/api/usuario", UsuarioController_1.getUsuario);
+app.get("/api/usuario/todos", UsuarioController_1.getUsuarios);
+app.listen(PORT, () => console.log("API online na porta: " + PORT));
