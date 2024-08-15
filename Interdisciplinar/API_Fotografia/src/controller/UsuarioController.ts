@@ -58,7 +58,7 @@ export async function getUsuario(req: Request, res: Response) {
     }
 }
 
-export async function getUsuarios(res: Response) {
+export async function getUsuarios(req: Request, res: Response) {
     try {
         const usuario = await usuarioService.getTodosUsuario();
         res.status(200).json(

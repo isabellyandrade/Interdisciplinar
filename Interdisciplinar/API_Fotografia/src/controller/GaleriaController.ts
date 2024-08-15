@@ -58,7 +58,7 @@ export async function getGaleria(req: Request, res: Response) {
     }
 }
 
-export async function getGalerias(res: Response) {
+export async function getGalerias(req: Request, res: Response) {
     try {
         const galeria = await galeriaService.getTodosGaleria();
         res.status(200).json(

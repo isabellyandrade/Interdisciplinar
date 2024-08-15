@@ -58,7 +58,7 @@ export async function getImagem(req: Request, res: Response) {
     }
 }
 
-export async function getImagems(res: Response) {
+export async function getImagems(req: Request, res: Response) {
     try {
         const imagem = await imagemService.getImagens();
         res.status(200).json(
