@@ -20,6 +20,7 @@ export class ImagemRepository{
         const query = `
         CREATE TABLE IF NOT EXISTS fotografia.Imagem (
             id INT AUTO_INCREMENT PRIMARY KEY,
+            usuarioId INT NOT NULL,
             caminhoArq VARCHAR(255) NOT NULL,
             filtroImagem VARCHAR(255) NOT NULL
         )`;
@@ -32,10 +33,10 @@ export class ImagemRepository{
     }
 
     async insertImagem(imagem: Imagem) :Promise<Imagem>{
-        const query = "INSERT INTO fotografia.Imagem (caminhoArq, filtroImagem) VALUES (?, ?)" ;
+        const query = "INSERT INTO fotografia.Imagem (usuarioId, caminhoArq, filtroImagem) VALUES (?, ?, ?)" ;
 
         try {
-            const resultado = await executarComandoSQL(query, [imagem.caminhoArq, imagem.filtroImagem]);
+            const resultado = await executarComandoSQL(query, [imagem.usuarioId, imagem.caminhoArq, imagem.filtroImagem]);
             console.log('Imagem inserida com sucesso, ID: ', resultado.insertId);
             imagem.id = resultado.insertId;
             return imagem;
@@ -48,8 +49,8 @@ export class ImagemRepository{
 
     async updateImagem(imagem: Imagem) :Promise<void>{
         try {
-            const query = "UPDATE fotografia.Imagem set caminhoArq = ?, filtroImagem = ? where id = ?;" ;
-            await executarComandoSQL(query, [imagem.caminhoArq, imagem.filtroImagem, imagem.id]);
+            const query = "UPDATE fotografia.Imagem set usuarioId = ?, caminhoArq = ?, filtroImagem = ? where id = ?;" ;
+            await executarComandoSQL(query, [imagem.usuarioId, imagem.caminhoArq, imagem.filtroImagem, imagem.id]);
             console.log('Imagem atualizada com sucesso:', imagem.id);
         } catch (err) {
             console.error('Erro ao atualizar imagem:', err);
@@ -69,9 +70,14 @@ export class ImagemRepository{
         }
     }
 
-    async getImagemByIdOuFiltro(filtroImagem?: string, id?: number): Promise<Imagem[]> {
+    async getImagemByUsuarioIdOuIdOuFiltro(usuarioId?:number, filtroImagem?: string, id?: number): Promise<Imagem[]> {
         let query = "SELECT * FROM fotografia.Imagem WHERE";
         const params: any[] = [];
+
+        if (usuarioId) {
+            query += " usuarioId = ?";
+            params.push(usuarioId);
+        }
 
         if (filtroImagem) {
             query += " filtroImagem = ?";

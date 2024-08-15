@@ -47,7 +47,7 @@ export async function deletarImagem (req: Request, res: Response){
 
 export async function getImagem(req: Request, res: Response) {
     try {
-        const imagem = await imagemService.getImagem(req.query.id, req.query.filtroImagem);
+        const imagem = await imagemService.getImagem(req.query.id, req.query.usuarioId, req.query.filtroImagem);
         res.status(200).json(
             {
                 imagem: imagem
