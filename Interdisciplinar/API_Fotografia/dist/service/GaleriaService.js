@@ -27,7 +27,7 @@ class GaleriaService {
                 throw new Error("Informações incompletas");
             }
             const users = yield this.usuarioRepository.getUsuarioPorIdOuUsernameOuEmailOuTelefone(usuarioId, undefined, undefined, undefined);
-            const imagens = yield this.imagemRepository.getImagemByIdOuFiltro(undefined, imagemId);
+            const imagens = yield this.imagemRepository.getImagemByUsuarioIdOuIdOuFiltro(undefined, undefined, imagemId);
             if (users.length == 0) {
                 throw new Error("Usuario não encontrado");
             }

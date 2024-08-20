@@ -11,19 +11,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImagemService = void 0;
 const Imagem_1 = require("../model/Imagem");
+const Usuario_1 = require("../model/Usuario");
 const ImagemRepository_1 = require("../repository/ImagemRepository");
+const UsuarioRepository_1 = require("../repository/UsuarioRepository");
 class ImagemService {
     constructor() {
         this.imagemRepository = ImagemRepository_1.ImagemRepository.getInstance();
+        this.usuarioRepository = UsuarioRepository_1.UsuarioRepository.getInstance();
     }
     cadastrarImagem(ImagemData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { caminhoArq, filtroImagem } = ImagemData;
-            if (!caminhoArq || !filtroImagem) {
+            const { usuarioId, caminhoArq, filtroImagem } = ImagemData;
+            if (!usuarioId || !caminhoArq || !filtroImagem) {
                 throw new Error("Informações incompletas");
             }
             let imagem = new Imagem_1.Imagem(undefined, caminhoArq, filtroImagem);
-            const imagemsEncontradas = yield this.imagemRepository.getImagemByIdOuFiltro(imagem.caminhoArq, undefined);
+            let usuario = new Usuario_1.Usuario(usuarioId, undefined, undefined);
+            const imagemsEncontradas = yield this.imagemRepository.getImagemByUsuarioIdOuIdOuFiltro(undefined, undefined, imagem.id);
+            const usuariosEncontrados = yield this.usuarioRepository.getUsuarioPorIdOuUsernameOuEmailOuTelefone(usuarioId, undefined, undefined, undefined);
+            if (usuariosEncontrados.length == 0) {
+                throw new Error("Usuario não encontrado");
+            }
             if (imagemsEncontradas.length > 0) {
                 throw new Error("Imagem já adicionada");
             }
@@ -32,12 +40,12 @@ class ImagemService {
     }
     atualizarImagem(ImagemData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id, caminhoArq, filtroImagem } = ImagemData;
-            if (!id || !caminhoArq || !filtroImagem) {
+            const { id, usuarioId, caminhoArq, filtroImagem } = ImagemData;
+            if (!id || !usuarioId || !caminhoArq || !filtroImagem) {
                 throw new Error("Informações incompletas");
             }
-            const imagem = new Imagem_1.Imagem(id, caminhoArq, filtroImagem);
-            const imagemsEncontradas = yield this.imagemRepository.getImagemByIdOuFiltro(undefined, id);
+            const imagem = new Imagem_1.Imagem(id, usuarioId, caminhoArq, filtroImagem);
+            const imagemsEncontradas = yield this.imagemRepository.getImagemByUsuarioIdOuIdOuFiltro(undefined, undefined, id);
             if (imagemsEncontradas.length == 0) {
                 throw new Error("Imagem informada inexistente.");
             }
@@ -59,10 +67,11 @@ class ImagemService {
             return imagem;
         });
     }
-    getImagem(id, filtroImagem) {
+    getImagem(id, usuarioId, filtroImagem) {
         return __awaiter(this, void 0, void 0, function* () {
             const idNumber = parseInt(id, 10);
-            const result = yield this.imagemRepository.getImagemByIdOuFiltro(filtroImagem, idNumber);
+            const idUser = parseInt(usuarioId, 10);
+            const result = yield this.imagemRepository.getImagemByUsuarioIdOuIdOuFiltro(idUser, filtroImagem, idNumber);
             if (result.length > 0) {
                 return result[0];
             }

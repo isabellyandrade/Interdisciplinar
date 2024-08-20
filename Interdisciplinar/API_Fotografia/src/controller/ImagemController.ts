@@ -1,72 +1,85 @@
-import { Request, Response } from "express";
 import { ImagemService } from "../service/ImagemService";
+import{Route, Tags, Post, Body, Res, Put, Get, Query, Delete, Controller, TsoaResponse } from "tsoa";
+import { BasicResponseDto } from "../model/dto/BasicResponseDto";
+import { ImagemRequestDto } from "../model/dto/ImagemRequestDto";
+import { ImagemDto } from "../model/dto/ImagemDto";
 
-const imagemService = new ImagemService();
+@Route("imagem")
+@Tags("Imagem")
+export class ImagemController extends Controller{
+    imagemService = new ImagemService();
 
-export async function cadastrarImagem (req: Request, res: Response){
-    try {
-        const novaImagem = await imagemService.cadastrarImagem(req.body);
-        res.status(201).json(
-            {
-                mensagem:"Imagem adicionada com sucesso!",
-                imagem:novaImagem
-            }
-        );
-    } catch (error: any) {
-        res.status(409).json({ message: error.message});
+    @Post()
+    async cadastrarImagem(
+        @Body() dto: ImagemRequestDto,
+        @Res() fail: TsoaResponse<409, BasicResponseDto>,
+        @Res() success: TsoaResponse<201, BasicResponseDto>
+    ): Promise<void>{
+        try {
+            const novaImagem = await this.imagemService.cadastrarImagem(dto);
+            return success(201, new BasicResponseDto("Imagem adicionada com sucesso!", novaImagem));
+    }catch (error: any) {
+        return fail(409, new BasicResponseDto(error.message, undefined));
     }
 };
 
-export async function atualizarImagem (req: Request, res: Response){
+@Put()
+async atualizarImagem(
+    @Body() dto: ImagemDto,
+    @Res() notFound: TsoaResponse<400, BasicResponseDto>,
+    @Res() success: TsoaResponse<200, BasicResponseDto>
+): Promise<void>{
     try {
-        const imagem = await imagemService.atualizarImagem(req.body);
-        res.status(200).json(
-            {
-                mensagem:"Imagem atualizada com sucesso!",
-                imagem:imagem
-            }
-        );
-    } catch (error: any) {
-        res.status(400).json({ message: error.message});
-    }
-};
-
-export async function deletarImagem (req: Request, res: Response){
-    try {
-        const imagem = await imagemService.deletarImagem(req.body);
-        res.status(200).json(
-            {
-                mensagem:"Imagem deletada com sucesso!",
-                imagem:imagem
-            }
-        );
-    } catch (error: any) {
-        res.status(400).json({ message: error.message});
-    }
-};
-
-export async function getImagem(req: Request, res: Response) {
-    try {
-        const imagem = await imagemService.getImagem(req.query.id, req.query.usuarioId, req.query.filtroImagem);
-        res.status(200).json(
-            {
-                imagem: imagem
-            }
-        );
-    } catch (error: any) {
-        res.status(400).json({ message: error.message });
-    }
+        const imagem = await this.imagemService.atualizarImagem(dto);
+        return success(200, new BasicResponseDto("Imagem atualizada com sucesso!", imagem));
+}catch (error: any) {
+    return notFound(400, new BasicResponseDto(error.message, undefined));
 }
 
-export async function getImagems(req: Request, res: Response) {
+};
+
+@Delete()
+async deletarImagem(
+    @Body() dto: ImagemDto,
+    @Res() notFound: TsoaResponse<400, BasicResponseDto>,
+    @Res() success: TsoaResponse<200, BasicResponseDto>
+): Promise<void>{
     try {
-        const imagem = await imagemService.getImagens();
-        res.status(200).json(
-            {
-                imagens: imagem
-            }
-        );
+        const imagem = await this.imagemService.deletarImagem(dto);
+        return success(200, new BasicResponseDto("Imagem deletada com sucesso!", imagem));
+}catch (error: any) {
+    return notFound(400, new BasicResponseDto(error.message, undefined));
+}
+
+};
+
+@Get()
+async getImagem(
+    @Query() id: number,
+    @Query() usuarioId: number,
+    @Query() filtroImagem: string,
+    @Res() notFound: TsoaResponse<400, BasicResponseDto>,
+    @Res() success: TsoaResponse<200, BasicResponseDto>
+): Promise<void> {
+    try {
+        const imagem = await this.imagemService.getImagem(id, usuarioId, filtroImagem);     
+        return success(200, new BasicResponseDto("Imagem encontrada!", imagem));
     } catch (error: any) {
-        res.status(400).json({ message: error.message });
+        return notFound(400, new BasicResponseDto("Imagem não encontrada...", undefined));
     }
+};
+
+@Get("todos")
+async getImagems(
+    @Res() notFound: TsoaResponse<400, BasicResponseDto>,
+    @Res() success: TsoaResponse<200, BasicResponseDto>
+): Promise<void> {
+    try {
+        const imagens = await this.imagemService.getImagens();     
+        return success(200, new BasicResponseDto("Imagens encontradas!", imagens));
+    } catch (error: any) {
+        return notFound(400, new BasicResponseDto("Imagens não encontradas...", undefined));
+    }
+};    
+
 };

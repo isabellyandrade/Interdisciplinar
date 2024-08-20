@@ -1,30 +1,20 @@
 import express from 'express';
-import { cadastrarGaleria, atualizarGaleria , deletarGaleria, getGaleria, getGalerias } from './controller/GaleriaController';
-import { cadastrarImagem, atualizarImagem , deletarImagem, getImagem, getImagems } from './controller/ImagemController';
-import { cadastrarUsuario, atualizarUsuario , deletarUsuario, getUsuario, getUsuarios } from './controller/UsuarioController';
+import { RegisterRoutes } from './route/routes';
+import { setupSwagger } from './config/swagger';
 
 const app = express();
 
-const PORT = 3400;
+const PORT = 3600;
 
 app.use(express.json());
 
-app.post("/api/galeria", cadastrarGaleria)
-app.put("/api/galeria", atualizarGaleria)
-app.delete("/api/galeria", deletarGaleria)
-app.get("/api/galeria", getGaleria)
-app.get("/api/galeria/todos", getGalerias)
+const apiRouter = express.Router();
+RegisterRoutes(apiRouter);
 
-app.post("/api/imagem", cadastrarImagem)
-app.put("/api/imagem", atualizarImagem)
-app.delete("/api/imagem", deletarImagem)
-app.get("/api/imagem", getImagem)
-app.get("/api/imagem/todos", getImagems)
+app.use('/api', apiRouter);
 
-app.post("/api/usuario", cadastrarUsuario)
-app.put("/api/usuario", atualizarUsuario)
-app.delete("/api/usuario", deletarUsuario)
-app.get("/api/usuario", getUsuario)
-app.get("/api/usuario/todos", getUsuarios)
+RegisterRoutes(app);
+
+setupSwagger(app);
 
 app.listen(PORT, ()=> console.log("API online na porta: " + PORT));

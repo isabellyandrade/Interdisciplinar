@@ -26,6 +26,7 @@ class ImagemRepository {
             const query = `
         CREATE TABLE IF NOT EXISTS fotografia.Imagem (
             id INT AUTO_INCREMENT PRIMARY KEY,
+            usuarioId INT NOT NULL,
             caminhoArq VARCHAR(255) NOT NULL,
             filtroImagem VARCHAR(255) NOT NULL
         )`;
@@ -40,9 +41,9 @@ class ImagemRepository {
     }
     insertImagem(imagem) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = "INSERT INTO fotografia.Imagem (caminhoArq, filtroImagem) VALUES (?, ?)";
+            const query = "INSERT INTO fotografia.Imagem (usuarioId, caminhoArq, filtroImagem) VALUES (?, ?, ?)";
             try {
-                const resultado = yield (0, mysql_1.executarComandoSQL)(query, [imagem.caminhoArq, imagem.filtroImagem]);
+                const resultado = yield (0, mysql_1.executarComandoSQL)(query, [imagem.usuarioId, imagem.caminhoArq, imagem.filtroImagem]);
                 console.log('Imagem inserida com sucesso, ID: ', resultado.insertId);
                 imagem.id = resultado.insertId;
                 return imagem;
@@ -56,8 +57,8 @@ class ImagemRepository {
     updateImagem(imagem) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const query = "UPDATE fotografia.Imagem set caminhoArq = ?, filtroImagem = ? where id = ?;";
-                yield (0, mysql_1.executarComandoSQL)(query, [imagem.caminhoArq, imagem.filtroImagem, imagem.id]);
+                const query = "UPDATE fotografia.Imagem set usuarioId = ?, caminhoArq = ?, filtroImagem = ? where id = ?;";
+                yield (0, mysql_1.executarComandoSQL)(query, [imagem.usuarioId, imagem.caminhoArq, imagem.filtroImagem, imagem.id]);
                 console.log('Imagem atualizada com sucesso:', imagem.id);
             }
             catch (err) {
@@ -79,10 +80,14 @@ class ImagemRepository {
             }
         });
     }
-    getImagemByIdOuFiltro(filtroImagem, id) {
+    getImagemByUsuarioIdOuIdOuFiltro(usuarioId, filtroImagem, id) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = "SELECT * FROM fotografia.Imagem WHERE";
             const params = [];
+            if (usuarioId) {
+                query += " usuarioId = ?";
+                params.push(usuarioId);
+            }
             if (filtroImagem) {
                 query += " filtroImagem = ?";
                 params.push(filtroImagem);

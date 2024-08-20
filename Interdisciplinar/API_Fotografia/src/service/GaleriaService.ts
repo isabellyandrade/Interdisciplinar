@@ -17,7 +17,7 @@ export class GaleriaService{
             throw new Error("Informações incompletas");
         }
         const users: Usuario[] = await this.usuarioRepository.getUsuarioPorIdOuUsernameOuEmailOuTelefone(usuarioId, undefined, undefined, undefined);
-        const imagens: Imagem[] = await this.imagemRepository.getImagemByIdOuFiltro(undefined, imagemId);
+        const imagens: Imagem[] = await this.imagemRepository.getImagemByUsuarioIdOuIdOuFiltro(undefined, undefined, imagemId);
 
         if(users.length == 0){
             throw new Error("Usuario não encontrado");
