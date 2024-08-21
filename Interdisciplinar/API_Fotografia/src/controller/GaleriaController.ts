@@ -22,6 +22,7 @@ export class GaleriaController extends Controller{
         return fail(409, new BasicResponseDto(error.message, undefined));
     }
 };
+
 @Put()
 async atualizarGaleria(
     @Body() dto: GaleriaDto,

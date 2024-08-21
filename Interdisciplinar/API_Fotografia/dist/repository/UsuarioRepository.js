@@ -72,7 +72,7 @@ class UsuarioRepository {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const query = "DELETE FROM fotografia.Usuario where id = ?;";
-                const resposta = yield (0, mysql_1.executarComandoSQL)(query, [usuario.id, usuario.username, usuario.email, usuario.name, usuario.telefone, usuario.senha]);
+                const resposta = yield (0, mysql_1.executarComandoSQL)(query, [usuario.id, usuario.username, usuario.email, usuario.name, usuario.telefone, usuario.senha, usuario.dataCriacao]);
                 console.log('Usuario deletado com sucesso:', resposta);
                 return resposta;
             }

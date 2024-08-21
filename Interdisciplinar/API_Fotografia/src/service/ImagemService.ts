@@ -13,21 +13,13 @@ export class ImagemService{
         if(!usuarioId || !caminhoArq || !filtroImagem){
             throw new Error("Informações incompletas");
         }
-        let imagem = new Imagem(undefined, caminhoArq, filtroImagem)
-        let usuario = new Usuario(usuarioId, undefined, undefined)
-
-        const imagemsEncontradas: Imagem[]= await this.imagemRepository.getImagemByUsuarioIdOuIdOuFiltro(undefined, undefined, imagem.id)
-        const usuariosEncontrados: Usuario[]= await this.usuarioRepository.getUsuarioPorIdOuUsernameOuEmailOuTelefone(usuarioId, undefined, undefined, undefined)
-
-        if(usuariosEncontrados.length == 0){
+        const users: Usuario[] = await this.usuarioRepository.getUsuarioPorIdOuUsernameOuEmailOuTelefone(usuarioId, undefined, undefined, undefined);
+        
+        if(users.length == 0){
             throw new Error("Usuario não encontrado");
         }
 
-        if(imagemsEncontradas.length > 0){
-            throw new Error("Imagem já adicionada");
-        }
-
-        return this.imagemRepository.insertImagem(imagem);
+        return this.imagemRepository.insertImagem(new Imagem(undefined, usuarioId, caminhoArq, filtroImagem));
     }
 
     async atualizarImagem(ImagemData: any): Promise<Imagem> {
@@ -47,15 +39,15 @@ export class ImagemService{
     }
 
     async deletarImagem(ImagemData: any): Promise<Imagem> {
-        const { id, caminhoArq, filtroImagem} = ImagemData;
-        if(!id || !caminhoArq || !filtroImagem){
+        const { id, usuarioId, caminhoArq, filtroImagem} = ImagemData;
+        if(!id || !usuarioId || !caminhoArq || !filtroImagem){
             throw new Error("Informações incompletas");
         }
         if (typeof id !== 'number' ) {
             throw new Error("Informe um ID correto.");
         }
 
-        const imagem = new Imagem(id, caminhoArq, filtroImagem);
+        const imagem = new Imagem(id, usuarioId, caminhoArq, filtroImagem);
 
         const result:any = await this.imagemRepository.deleteImagem(imagem.id);
         return imagem;

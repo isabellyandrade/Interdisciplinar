@@ -41,7 +41,7 @@ class UsuarioService {
     }
     deletarUsuario(userData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const usuario = new Usuario_1.Usuario(userData.id, userData.email, userData.name, userData.telefone, userData.senha);
+            const usuario = new Usuario_1.Usuario(userData.id, userData.email, userData.name, userData.telefone, userData.senha, userData.dataCriacao);
             if (!(usuario instanceof Usuario_1.Usuario)) {
                 throw new Error("O parâmetro passado não é um objeto do tipo Usuario");
             }

@@ -28,7 +28,7 @@ export class UsuarioService{
     }
 
     async deletarUsuario(userData: Usuario): Promise<Usuario> {
-        const usuario = new Usuario(userData.id, userData.email, userData.name, userData.telefone, userData.senha);
+        const usuario = new Usuario(userData.id, userData.email, userData.name, userData.telefone, userData.senha, userData.dataCriacao);
         if (!(usuario instanceof Usuario)) {
             throw new Error("O parâmetro passado não é um objeto do tipo Usuario");
         }

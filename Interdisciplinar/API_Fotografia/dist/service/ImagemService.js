@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImagemService = void 0;
 const Imagem_1 = require("../model/Imagem");
-const Usuario_1 = require("../model/Usuario");
 const ImagemRepository_1 = require("../repository/ImagemRepository");
 const UsuarioRepository_1 = require("../repository/UsuarioRepository");
 class ImagemService {
@@ -25,17 +24,11 @@ class ImagemService {
             if (!usuarioId || !caminhoArq || !filtroImagem) {
                 throw new Error("Informações incompletas");
             }
-            let imagem = new Imagem_1.Imagem(undefined, caminhoArq, filtroImagem);
-            let usuario = new Usuario_1.Usuario(usuarioId, undefined, undefined);
-            const imagemsEncontradas = yield this.imagemRepository.getImagemByUsuarioIdOuIdOuFiltro(undefined, undefined, imagem.id);
-            const usuariosEncontrados = yield this.usuarioRepository.getUsuarioPorIdOuUsernameOuEmailOuTelefone(usuarioId, undefined, undefined, undefined);
-            if (usuariosEncontrados.length == 0) {
+            const users = yield this.usuarioRepository.getUsuarioPorIdOuUsernameOuEmailOuTelefone(usuarioId, undefined, undefined, undefined);
+            if (users.length == 0) {
                 throw new Error("Usuario não encontrado");
             }
-            if (imagemsEncontradas.length > 0) {
-                throw new Error("Imagem já adicionada");
-            }
-            return this.imagemRepository.insertImagem(imagem);
+            return this.imagemRepository.insertImagem(new Imagem_1.Imagem(undefined, usuarioId, caminhoArq, filtroImagem));
         });
     }
     atualizarImagem(ImagemData) {
@@ -55,14 +48,14 @@ class ImagemService {
     }
     deletarImagem(ImagemData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id, caminhoArq, filtroImagem } = ImagemData;
-            if (!id || !caminhoArq || !filtroImagem) {
+            const { id, usuarioId, caminhoArq, filtroImagem } = ImagemData;
+            if (!id || !usuarioId || !caminhoArq || !filtroImagem) {
                 throw new Error("Informações incompletas");
             }
             if (typeof id !== 'number') {
                 throw new Error("Informe um ID correto.");
             }
-            const imagem = new Imagem_1.Imagem(id, caminhoArq, filtroImagem);
+            const imagem = new Imagem_1.Imagem(id, usuarioId, caminhoArq, filtroImagem);
             const result = yield this.imagemRepository.deleteImagem(imagem.id);
             return imagem;
         });

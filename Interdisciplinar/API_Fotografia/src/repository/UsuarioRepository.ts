@@ -64,7 +64,7 @@ export class UsuarioRepository{
     async deleteUsuario(usuario: Usuario) :Promise<any>{
         try {
         const query = "DELETE FROM fotografia.Usuario where id = ?;" ;
-        const resposta = await executarComandoSQL(query, [usuario.id, usuario.username, usuario.email, usuario.name, usuario.telefone, usuario.senha]);
+        const resposta = await executarComandoSQL(query, [usuario.id, usuario.username, usuario.email, usuario.name, usuario.telefone, usuario.senha, usuario.dataCriacao]);
         console.log('Usuario deletado com sucesso:', resposta);
         
         return resposta;
